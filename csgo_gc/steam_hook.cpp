@@ -896,22 +896,6 @@ public:
         m_original->SetKeyValue(pKey, pValue);
     }
 
-    void SetGameTags(const char *pchGameTags) override
-    {
-        std::string tags = pchGameTags;
-
-        if (tags.size())
-        {
-            tags.append(",csgo_gc");
-        }
-        else
-        {
-            tags.append("csgo_gc");
-        }
-
-        m_original->SetGameTags(tags.c_str());
-    }
-
     void SetGameData(const char *pchGameData) override
     {
         m_original->SetGameData(pchGameData);
@@ -1233,7 +1217,6 @@ public:
     {
         buffer.reserve(nFilters + 1);
         buffer.assign(pchFilters, pchFilters + nFilters);
-        buffer.push_back({ "gametagsand", "csgo_gc" });
         return buffer.data();
     }
 
