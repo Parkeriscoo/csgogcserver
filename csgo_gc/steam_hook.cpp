@@ -4,7 +4,7 @@
 #include "steam_hook.h"
 #include "appid.h"
 #include "gc_client.h"
-#include "gc_server.h"
+#include "gc_server.h" 
 #include "platform.h"
 #include <funchook.h>
 
@@ -772,30 +772,6 @@ public:
     {
     }
 
-    bool InitGameServer(uint32 unIP, uint16 usGamePort, uint16 usQueryPort, uint32 unFlags, AppId_t nGameAppId, const char *pchVersionString) override
-    {
-        // no longer present in steamworks sdk
-        constexpr uint32 k_unServerFlagSecure = 2;
-
-        // never run secure!!!
-        unFlags &= ~k_unServerFlagSecure;
-
-        // make sure we're up to date
-        pchVersionString = "1.99.9.9";
-
-        // i recall this wasn't used for anything important, but check anyway
-        assert(nGameAppId == AppId::GetOverride());
-
-        if (m_original->InitGameServer(unIP, usGamePort, usQueryPort, unFlags, nGameAppId, pchVersionString))
-        {
-            // add the csgo_gc gametag
-            m_original->SetGameTags("csgo_gc");
-            return true;
-        }
-
-        return false;
-    }
-
     void SetProduct(const char *pszProduct) override
     {
         m_original->SetProduct(pszProduct);
@@ -894,22 +870,6 @@ public:
     void SetKeyValue(const char *pKey, const char *pValue) override
     {
         m_original->SetKeyValue(pKey, pValue);
-    }
-
-    void SetGameTags(const char *pchGameTags) override
-    {
-        std::string tags = pchGameTags;
-
-        if (tags.size())
-        {
-            tags.append(",csgo_gc");
-        }
-        else
-        {
-            tags.append("csgo_gc");
-        }
-
-        m_original->SetGameTags(tags.c_str());
     }
 
     void SetGameData(const char *pchGameData) override
@@ -1233,7 +1193,6 @@ public:
     {
         buffer.reserve(nFilters + 1);
         buffer.assign(pchFilters, pchFilters + nFilters);
-        buffer.push_back({ "gametagsand", "csgo_gc" });
         return buffer.data();
     }
 
